@@ -42,7 +42,11 @@ export default function home() {
   return (
     <SafeAreaView style={styles.container}>
       {isLoading ? (
-        <ActivityIndicator size={"small"} />
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ActivityIndicator size="large" />
+        </View>
       ) : (
         <>
           <ScrollView

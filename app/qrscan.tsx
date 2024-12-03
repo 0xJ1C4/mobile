@@ -14,6 +14,7 @@ import {
 import Overlay from "./Overlay";
 import { saveSessionFromQr, getUser } from "@/helper/Session";
 import { useRouter } from "expo-router";
+import { ActivityIndicator } from "react-native";
 
 export default function QRScan() {
   const router = useRouter();
@@ -21,6 +22,7 @@ export default function QRScan() {
   const appState = useRef(AppState.currentState);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -45,6 +47,7 @@ export default function QRScan() {
   }, []);
 
   const handleBarCodeScanned = async (result: BarcodeScanningResult) => {
+    setIsLoading(true);
     const { data } = result;
     if (data && !qrLock.current) {
       qrLock.current = true;
@@ -52,6 +55,7 @@ export default function QRScan() {
       if (data) {
         await saveSessionFromQr(data);
         const user = await getUser();
+        setIsLoading(false);
         if (user) {
           router.replace("/home");
         }
@@ -66,14 +70,16 @@ export default function QRScan() {
     return <Text>No access to camera</Text>;
   }
 
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={StyleSheet.absoluteFillObject}>
-      <Stack.Screen
-        options={{
-          title: "QR Scanner",
-          headerShown: false,
-        }}
-      />
       {Platform.OS === "android" ? <StatusBar hidden /> : null}
       <CameraView
         style={StyleSheet.absoluteFillObject}
