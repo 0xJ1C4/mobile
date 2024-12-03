@@ -22,7 +22,7 @@ export default function home() {
         const user = await getUser();
       } catch (error) {
         await removeSession();
-        router.push("/qrscan");
+        router.replace("/qrscan");
         console.log(error);
       }
     };
@@ -63,7 +63,13 @@ export default function home() {
               />
             </View>
 
-            <Button title="Log Out" onPress={async () => await signOut()} />
+            <Button
+              title="Log Out"
+              onPress={async () => {
+                await signOut();
+                router.replace("/qrscan");
+              }}
+            />
           </ScrollView>
         </>
       )}

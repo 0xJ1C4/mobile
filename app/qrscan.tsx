@@ -53,7 +53,7 @@ export default function QRScan() {
         await saveSessionFromQr(data);
         const user = await getUser();
         if (user) {
-          router.push("/home");
+          router.replace("/home");
         }
       }
     }
