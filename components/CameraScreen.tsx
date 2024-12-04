@@ -3,12 +3,21 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { CameraView, CameraType } from "expo-camera";
 import { useEffect } from "react";
 import { Camera } from "expo-camera";
+import { getReceiptContent } from "@/helper/scan";
+import LoadingIndicator from "./ui/loadingIndicator";
+import { useRouter } from "expo-router";
+import { useReceipt } from "@/provider/Provider";
+import { ReceiptData } from "@/constants/types";
 
 export default function CameraScreen() {
   const [type, setType] = useState("");
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const cameraRef = useRef<CameraView>(null);
   const [photo, setPhoto] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { setReceiptData } = useReceipt();
+  const router = useRouter();
 
   useEffect(() => {
     const getPermission = async () => {
@@ -43,32 +52,39 @@ export default function CameraScreen() {
   function toggleCameraType() {
     setType((current: string) => (current === "back" ? "front" : "back"));
   }
-
+  let options = {
+    quality: 0.6,
+    base64: true,
+    exif: false,
+  };
   async function takePicture() {
-    let options = {
-      quality: 1,
-      base64: true,
-      exif: false,
-    };
     if (cameraRef.current) {
       try {
-        const photo = await cameraRef.current.takePictureAsync(options);
-        setPhoto(photo?.base64 || "");
-        console.log("Photo taken:", photo?.base64);
-        // Here you can handle the captured photo, e.g., save it or send it to a server
+        setIsLoading(true);
+        const currentPhoto = await cameraRef.current.takePictureAsync(options);
+        setPhoto(currentPhoto?.base64 || "");
+
+        const content = await getReceiptContent(currentPhoto?.base64 || "");
+        setIsLoading(false);
+        if (content) {
+          setReceiptData(content?.message);
+          router.push("/(input)/edit-receipt");
+        }
       } catch (error) {
         console.error("Error taking picture:", error);
+        setIsLoading(false);
       }
     }
+  }
+
+  if (isLoading) {
+    return <LoadingIndicator />;
   }
 
   return (
     <View style={styles.container}>
       <CameraView style={styles.camera} ref={cameraRef}>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleCameraType}>
-            <Text style={styles.buttonText}>Flip Camera</Text>
-          </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={takePicture}>
             <Text style={styles.buttonText}>Take Picture</Text>
           </TouchableOpacity>

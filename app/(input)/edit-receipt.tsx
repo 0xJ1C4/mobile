@@ -7,63 +7,61 @@ import {
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
-  Platform,
 } from "react-native";
-import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { SelectList } from "react-native-dropdown-select-list";
 import { useRouter } from "expo-router";
+import { useReceipt } from "@/provider/Provider";
 
 export default function EditReceipt() {
   const router = useRouter();
-  const [receiptData, setReceiptData] = useState({
-    receipt_number: "0056",
-    date: new Date("2024-03-25"),
-    delivered_by: "",
-    delivered_to: "CORNER CUISINE",
-    address: "",
-    receipt_type: "",
-    items: [
-      { description: "BAGOONG", unit_price: "124.15", amount: "1489.8" },
-      { description: "PALAPA", unit_price: "131.95", amount: "1583.4" },
-      { description: "PALAPA", unit_price: "73.5", amount: "1102.5" },
-      { description: "CHILI GARLIC", unit_price: "144.03", amount: "1728.36" },
-      { description: "CHILI GARLIC", unit_price: "79.66", amount: "1194" },
-    ],
-    total: "7098.06",
-  });
+  const { receiptData, setReceiptData } = useReceipt();
 
-  const [selected, setSelected] = React.useState([]);
+  console.log(receiptData);
+
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedType, setSelectedType] = useState(
+    receiptData?.receipt_type || ""
+  );
+
   const data = [
     { key: "1", value: "Sales" },
     { key: "2", value: "Expense" },
   ];
 
-  const handleInputChange = (field: string, value: string | Date) => {
-    setReceiptData((prevData) => ({
-      ...prevData,
-      [field]: value,
-    }));
-  };
+  interface ReceiptItem {
+    description: string;
+    unit_price: string;
+    amount: string;
+  }
 
-  const renderInputField = (label: string, field: string, value: string) => (
-    <View style={styles.inputContainer}>
-      <Text style={styles.label}>{label}</Text>
-      <TextInput
-        style={styles.input}
-        value={value}
-        onChangeText={(text) => handleInputChange(field, text)}
-      />
-    </View>
-  );
-
-  const handleDateChange = (event: any, selectedDate?: Date) => {
-    setShowDatePicker(false);
-    if (selectedDate) {
-      handleInputChange("date", selectedDate);
+  const handleInputChange = (
+    field: string,
+    value: string | Date | ReceiptItem[]
+  ) => {
+    if (setReceiptData && receiptData) {
+      // Special handling for 'items' field
+      if (field === "items" && Array.isArray(value)) {
+        setReceiptData({
+          ...receiptData,
+          items: value,
+        });
+      } else {
+        setReceiptData({
+          ...receiptData,
+          [field]: value,
+        });
+      }
     }
   };
+
+  if (!receiptData) {
+    return (
+      <View style={styles.container}>
+        <Text>No receipt data available. Please scan a receipt.</Text>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -72,56 +70,95 @@ export default function EditReceipt() {
           <Text style={styles.title}>Edit Receipt</Text>
 
           <View style={styles.formGrid}>
-            {renderInputField(
-              "Receipt Number",
-              "receiptNumber",
-              receiptData.receipt_number
-            )}
+            {/* Receipt Number */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Receipt Number</Text>
+              <TextInput
+                style={styles.input}
+                value={receiptData.receipt_number}
+                onChangeText={(text) =>
+                  handleInputChange("receipt_number", text)
+                }
+              />
+            </View>
 
+            {/* Date */}
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Date</Text>
               <TouchableOpacity
                 onPress={() => setShowDatePicker(true)}
                 style={styles.dateButton}
               >
-                <Text>{receiptData.date.toLocaleDateString()}</Text>
+                <Text>
+                  {receiptData.date
+                    ? new Date(receiptData.date).toLocaleDateString()
+                    : "No date available"}
+                </Text>
               </TouchableOpacity>
               {showDatePicker && (
                 <DateTimePicker
                   value={receiptData.date}
                   mode="date"
                   display="default"
-                  onChange={handleDateChange}
+                  onChange={(event, selectedDate) => {
+                    setShowDatePicker(false);
+                    if (selectedDate) {
+                      handleInputChange("date", selectedDate);
+                    }
+                  }}
                 />
               )}
             </View>
 
-            {renderInputField(
-              "Delivered By",
-              "deliveredBy",
-              receiptData.delivered_by
-            )}
-            {renderInputField(
-              "Delivered To",
-              "deliveredTo",
-              receiptData.delivered_to
-            )}
-            {renderInputField("Address", "address", receiptData.address)}
+            {/* Delivered By */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Delivered By</Text>
+              <TextInput
+                style={styles.input}
+                value={receiptData.delivered_by}
+                onChangeText={(text) => handleInputChange("delivered_by", text)}
+              />
+            </View>
 
+            {/* Delivered To */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Delivered To</Text>
+              <TextInput
+                style={styles.input}
+                value={receiptData.delivered_to}
+                onChangeText={(text) => handleInputChange("delivered_to", text)}
+              />
+            </View>
+
+            {/* Address */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Address</Text>
+              <TextInput
+                style={styles.input}
+                value={receiptData.address}
+                onChangeText={(text) => handleInputChange("address", text)}
+              />
+            </View>
+
+            {/* Receipt Type */}
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Receipt Type</Text>
-              <View style={styles.pickerContainer}>
-                <SelectList
-                  setSelected={(val: React.SetStateAction<never[]>) =>
-                    setSelected(val)
-                  }
-                  data={data}
-                  save="value"
-                />
-              </View>
+              <SelectList
+                setSelected={(val: string) => {
+                  setSelectedType(val);
+                  handleInputChange("receipt_type", val);
+                }}
+                data={data}
+                save="value"
+                defaultOption={{
+                  key: receiptData.receipt_type,
+                  value: selectedType,
+                }}
+              />
             </View>
           </View>
 
+          {/* Items Table */}
           <View style={styles.tableHeader}>
             <Text style={[styles.headerText, styles.descriptionCol]}>
               Description
@@ -129,19 +166,18 @@ export default function EditReceipt() {
             <Text style={[styles.headerText, styles.priceCol]}>Unit Price</Text>
             <Text style={[styles.headerText, styles.amountCol]}>Amount</Text>
           </View>
-
           {receiptData.items.map((item, index) => (
             <View key={index} style={styles.tableRow}>
               <TextInput
                 style={[styles.tableInput, styles.descriptionCol]}
                 value={item.description}
                 onChangeText={(text) => {
-                  const newItems = [...receiptData.items];
-                  newItems[index].description = text;
-                  setReceiptData((prevData) => ({
-                    ...prevData,
-                    items: newItems,
-                  }));
+                  const updatedItems = [...receiptData.items];
+                  updatedItems[index] = {
+                    ...updatedItems[index],
+                    description: text,
+                  };
+                  handleInputChange("items", updatedItems); // Pass the updated array
                 }}
               />
               <TextInput
@@ -149,12 +185,12 @@ export default function EditReceipt() {
                 value={item.unit_price}
                 keyboardType="numeric"
                 onChangeText={(text) => {
-                  const newItems = [...receiptData.items];
-                  newItems[index].unit_price = text;
-                  setReceiptData((prevData) => ({
-                    ...prevData,
-                    items: newItems,
-                  }));
+                  const updatedItems = [...receiptData.items];
+                  updatedItems[index] = {
+                    ...updatedItems[index],
+                    unit_price: text,
+                  };
+                  handleInputChange("items", updatedItems);
                 }}
               />
               <TextInput
@@ -162,17 +198,18 @@ export default function EditReceipt() {
                 value={item.amount}
                 keyboardType="numeric"
                 onChangeText={(text) => {
-                  const newItems = [...receiptData.items];
-                  newItems[index].amount = text;
-                  setReceiptData((prevData) => ({
-                    ...prevData,
-                    items: newItems,
-                  }));
+                  const updatedItems = [...receiptData.items];
+                  updatedItems[index] = {
+                    ...updatedItems[index],
+                    amount: text,
+                  };
+                  handleInputChange("items", updatedItems);
                 }}
               />
             </View>
           ))}
 
+          {/* Total */}
           <View style={styles.totalContainer}>
             <Text style={styles.totalLabel}>Total</Text>
             <TextInput
@@ -182,6 +219,7 @@ export default function EditReceipt() {
             />
           </View>
 
+          {/* Save and Cancel Buttons */}
           <TouchableOpacity style={styles.saveButton}>
             <Text style={styles.saveButtonText}>Save Changes</Text>
           </TouchableOpacity>
@@ -189,7 +227,7 @@ export default function EditReceipt() {
           <TouchableOpacity
             style={styles.cancelButton}
             onPress={() => {
-              router.dismissAll();
+              router.back();
             }}
           >
             <Text style={styles.cancelButtonText}>Cancel or Re-scan</Text>

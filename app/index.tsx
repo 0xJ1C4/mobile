@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, SafeAreaView, Pressable } from "react-native";
 import { Link, Stack } from "expo-router";
 import { useCameraPermissions } from "expo-camera";
 import { useEffect, useState } from "react";
-import { getUser, getSession, removeSession, signOut } from "@/helper/Session";
+import { getUser, getSession, removeSession } from "@/helper/Session";
 import { useRouter } from "expo-router";
 import { ActivityIndicator } from "react-native";
 
