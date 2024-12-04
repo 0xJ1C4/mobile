@@ -22,8 +22,8 @@ export type total = {
 
 export type ReceiptItem = {
     description: string;
-    unit_price: number;
-    amount: number;
+    unit_price: string;
+    amount: string;
   };
   
 export type ReceiptData = {
@@ -34,6 +34,6 @@ export type ReceiptData = {
     address: string;
     receipt_type: string;
     items: ReceiptItem[];
-    total: number;
+    total: string;
   }| null; 
   

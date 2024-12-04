@@ -53,7 +53,7 @@ export default function CameraScreen() {
     setType((current: string) => (current === "back" ? "front" : "back"));
   }
   let options = {
-    quality: 0.6,
+    quality: 0.3,
     base64: true,
     exif: false,
   };
@@ -67,7 +67,16 @@ export default function CameraScreen() {
         const content = await getReceiptContent(currentPhoto?.base64 || "");
         setIsLoading(false);
         if (content) {
-          setReceiptData(content?.message);
+          const transformedData = {
+            ...content?.message,
+            items: content?.message.items.map((item: any) => ({
+              ...item,
+              unit_price: item.unit_price.toString(),
+              amount: item.amount.toString(),
+            })),
+            total: content?.message?.total.toString(),
+          };
+          setReceiptData(transformedData);
           router.push("/(input)/edit-receipt");
         }
       } catch (error) {
