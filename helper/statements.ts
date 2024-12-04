@@ -3,19 +3,13 @@ import { getSession } from "./Session";
 
 export const getStatement = async () => {
   const session = await getSession();
-  try {
-    const req = await fetch(`${NEXT_API_URL}/api/total/month`, {
-      method: "GET",
-      headers: {
-        Cookie: `;__Secure-authjs.session-token=${session};`,
-      },
-    });
 
-    if (req.ok) {
-      const data = await req.json();
-      return data;
-    }
-  } catch (error) {
-    throw new Error("Fetch failed, please try again");
+  const req = await fetch(`${NEXT_API_URL}/api/total/month`, {
+    method: "GET",
+  });
+
+  if (req.ok) {
+    const data = await req.json();
+    return data;
   }
 };

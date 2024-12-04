@@ -10,9 +10,10 @@ import {
   StyleSheet,
   View,
   Text,
+  Alert,
 } from "react-native";
 import Overlay from "./Overlay";
-import { saveSessionFromQr, getUser } from "@/helper/Session";
+import { saveSessionFromQr, removeSession, getUser } from "@/helper/Session";
 import { useRouter } from "expo-router";
 import { ActivityIndicator } from "react-native";
 
@@ -47,18 +48,20 @@ export default function QRScan() {
   }, []);
 
   const handleBarCodeScanned = async (result: BarcodeScanningResult) => {
-    setIsLoading(true);
+    setIsLoading(false);
     const { data } = result;
     if (data && !qrLock.current) {
       qrLock.current = true;
-      setScanned(true);
-      if (data) {
+      try {
         await saveSessionFromQr(data);
         const user = await getUser();
+        setScanned(false);
         setIsLoading(false);
-        if (user) {
-          router.replace("/home");
-        }
+        router.replace('/(tabs)/home');
+      } catch (error) {
+        setScanned(false);
+        setIsLoading(false);
+        router.dismiss();
       }
     }
   };
@@ -70,6 +73,7 @@ export default function QRScan() {
     return <Text>No access to camera</Text>;
   }
 
+  /**
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -77,6 +81,7 @@ export default function QRScan() {
       </View>
     );
   }
+  */
 
   return (
     <SafeAreaView style={StyleSheet.absoluteFillObject}>
@@ -86,6 +91,9 @@ export default function QRScan() {
         onBarcodeScanned={
           scanned ? undefined : (result) => handleBarCodeScanned(result)
         }
+        barcodeScannerSettings={{
+          barcodeTypes: ["qr"],
+        }}
       />
       <Overlay />
     </SafeAreaView>

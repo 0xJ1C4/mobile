@@ -3,10 +3,10 @@ import { ScrollView, StyleSheet, View, Text, Button } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MetricCard from "@/components/MetricCard";
 import ProfitLossCard from "@/components/ProfitLossCard";
-import { getUser, signOut } from "@/helper/Session";
+import { getUser } from "@/helper/Session";
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "expo-router";
-import { removeSession } from "@/helper/Session";
+import { removeSession, getSession } from "@/helper/Session";
 import { ActivityIndicator } from "react-native";
 import SummaryCards from "@/components/SummaryCards";
 import { RefreshControl } from "react-native";
@@ -20,6 +20,7 @@ export default function home() {
       try {
         setIsLoading(true);
         const user = await getUser();
+        console.log(await getSession());
       } catch (error) {
         await removeSession();
         router.replace("/qrscan");
@@ -70,7 +71,7 @@ export default function home() {
             <Button
               title="Log Out"
               onPress={async () => {
-                await signOut();
+                await removeSession();
                 router.replace("/qrscan");
               }}
             />
