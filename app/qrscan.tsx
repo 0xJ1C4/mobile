@@ -60,7 +60,7 @@ export default function QRScan() {
       } catch (error) {
         setScanned(false);
         setIsLoading(false);
-        router.dismissAll();
+        router.replace("/(tabs)/home");
       }
     }
   };
