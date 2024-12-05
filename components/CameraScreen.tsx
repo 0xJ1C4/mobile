@@ -33,7 +33,6 @@ export default function CameraScreen() {
   }
 
   if (!hasPermission) {
-    // Camera permissions are not granted yet
     return (
       <View style={styles.container}>
         <Text style={styles.text}>
@@ -59,30 +58,27 @@ export default function CameraScreen() {
   };
   async function takePicture() {
     if (cameraRef.current) {
-      try {
-        setIsLoading(true);
-        const currentPhoto = await cameraRef.current.takePictureAsync(options);
-        setPhoto(currentPhoto?.base64 || "");
+      setIsLoading(true);
+      const currentPhoto = await cameraRef.current.takePictureAsync(options);
+      setPhoto(currentPhoto?.base64 || "");
+      const content = await getReceiptContent(currentPhoto?.base64 || "");
+      setIsLoading(false);
 
-        const content = await getReceiptContent(currentPhoto?.base64 || "");
-        setIsLoading(false);
-        if (content) {
-          const transformedData = {
-            ...content?.message,
-            items: content?.message.items.map((item: any) => ({
-              ...item,
-              unit_price: item.unit_price.toString(),
-              amount: item.amount.toString(),
-            })),
-            total: content?.message?.total.toString(),
-            image: currentPhoto?.base64,
-          };
-          setReceiptData(transformedData);
-          router.push("/(input)/edit-receipt");
-        }
-      } catch (error) {
-        console.error("Error taking picture:", error);
-        setIsLoading(false);
+      // Process the captured image
+      if (content) {
+        const transformedData = {
+          ...content?.message,
+          items: content?.message.items.map((item: any) => ({
+            ...item,
+            unit_price: item.unit_price.toString(),
+            amount: item.amount.toString(),
+          })),
+          total: content?.message?.total.toString(),
+          image: currentPhoto?.base64,
+        };
+        // send to the api
+        setReceiptData(transformedData);
+        router.push("/(input)/edit-receipt");
       }
     }
   }

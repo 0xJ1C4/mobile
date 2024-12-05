@@ -46,12 +46,12 @@ export default function SummaryCards() {
             change={Number(sales?.trends) || 0}
           />
           <MetricCard
-            title="Monthly Sales"
+            title="Monthly Expenses"
             amount={`₱${expense?.currenMonthExpense.toLocaleString()}`}
             change={Number(expense?.trends) || 0}
           />
           <MetricCard
-            title="Monthly Sales"
+            title="Monthly Income"
             amount={`₱${total?.total.toLocaleString()}`}
             change={Number(total?.trends) || 0}
           />
