@@ -7,11 +7,15 @@ import {
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { SelectList } from "react-native-dropdown-select-list";
 import { useRouter } from "expo-router";
 import { useReceipt } from "@/provider/Provider";
+import { saveReceiptContent } from "@/helper/receipt";
+import { ReceiptData } from "@/constants/types";
+import LoadingIndicator from "@/components/ui/loadingIndicator";
 
 export default function EditReceipt() {
   const router = useRouter();
@@ -21,6 +25,7 @@ export default function EditReceipt() {
   const [selectedType, setSelectedType] = useState(
     receiptData?.receipt_type || ""
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   const [items, setItems] = useState(receiptData?.items || []);
   const [total, setTotal] = useState(receiptData?.total || "0");
@@ -65,6 +70,10 @@ export default function EditReceipt() {
     );
   }
 
+  if (isLoading) {
+    return <LoadingIndicator />;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -94,7 +103,9 @@ export default function EditReceipt() {
                 {!showDatePicker && (
                   <DateTimePicker
                     value={
-                      receiptData.date ? new Date(receiptData.date) : new Date()
+                      receiptData.date
+                        ? new Date(receiptData.date)
+                        : new Date("2024-05-05")
                     }
                     mode="date"
                     display="default"
@@ -222,8 +233,25 @@ export default function EditReceipt() {
           {/* Save and Cancel Buttons */}
           <TouchableOpacity
             style={styles.saveButton}
-            onPress={() => {
-              console.log(receiptData);
+            onPress={async () => {
+              try {
+                setIsLoading(true);
+                const transformedData = {
+                  ...receiptData,
+                  items: receiptData.items.map((item: any) => ({
+                    ...item,
+                    unit_price: Number(item.unit_price),
+                    amount: Number(item.amount),
+                  })),
+                  total: Number(receiptData.total),
+                  receipt_type: selectedType,
+                };
+                await saveReceiptContent(transformedData);
+                setIsLoading(false);
+                router.dismiss();
+              } catch (error) {
+                Alert.alert("An Error occured");
+              }
             }}
           >
             <Text style={styles.saveButtonText}>Save Changes</Text>

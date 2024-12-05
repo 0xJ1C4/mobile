@@ -28,7 +28,7 @@ export const getUser = async () => {
       credentials:'include',
       method: "GET",
       headers: {
-        'Cookie': `;__Secure-authjs.session-token=${session};`
+        'Authorization': `Bearer ${session}`
       },
     });
 

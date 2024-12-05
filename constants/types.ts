@@ -35,5 +35,6 @@ export type ReceiptData = {
     receipt_type: string;
     items: ReceiptItem[];
     total: string;
+    image: string,
   }| null; 
   

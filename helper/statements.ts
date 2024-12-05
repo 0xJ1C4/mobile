@@ -6,6 +6,9 @@ export const getStatement = async () => {
 
   const req = await fetch(`${NEXT_API_URL}/api/total/month`, {
     method: "GET",
+    headers: {
+      'Authorization': `Bearer ${session}`
+    }
   });
 
   if (req.ok) {

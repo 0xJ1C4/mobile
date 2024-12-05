@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { CameraView, CameraType } from "expo-camera";
 import { useEffect } from "react";
 import { Camera } from "expo-camera";
-import { getReceiptContent } from "@/helper/scan";
+import { getReceiptContent } from "@/helper/receipt";
 import LoadingIndicator from "./ui/loadingIndicator";
 import { useRouter } from "expo-router";
 import { useReceipt } from "@/provider/Provider";
@@ -53,7 +53,7 @@ export default function CameraScreen() {
     setType((current: string) => (current === "back" ? "front" : "back"));
   }
   let options = {
-    quality: 0.3,
+    quality: 0.5,
     base64: true,
     exif: false,
   };
@@ -75,6 +75,7 @@ export default function CameraScreen() {
               amount: item.amount.toString(),
             })),
             total: content?.message?.total.toString(),
+            image: currentPhoto?.base64,
           };
           setReceiptData(transformedData);
           router.push("/(input)/edit-receipt");

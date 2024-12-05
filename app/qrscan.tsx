@@ -13,9 +13,8 @@ import {
   Alert,
 } from "react-native";
 import Overlay from "./Overlay";
-import { saveSessionFromQr, removeSession, getUser } from "@/helper/Session";
+import { saveSessionFromQr, getUser } from "@/helper/Session";
 import { useRouter } from "expo-router";
-import { ActivityIndicator } from "react-native";
 
 export default function QRScan() {
   const router = useRouter();
@@ -57,11 +56,11 @@ export default function QRScan() {
         const user = await getUser();
         setScanned(false);
         setIsLoading(false);
-        router.replace('/(tabs)/home');
+        router.replace("/(tabs)/home");
       } catch (error) {
         setScanned(false);
         setIsLoading(false);
-        router.dismiss();
+        router.dismissAll();
       }
     }
   };
