@@ -113,7 +113,7 @@ export default function EditReceipt() {
                 {showDatePicker && (
                   <DateTimePicker
                     value={
-                      receiptData.date ? new Date(receiptData.date) : new Date()
+                      receiptData.date ? new Date() : new Date(receiptData.date)
                     }
                     mode="date"
                     display="default"
@@ -248,7 +248,6 @@ export default function EditReceipt() {
               style={styles.saveButton}
               onPress={async () => {
                 try {
-                  setIsLoading(true);
                   const transformedData = {
                     ...receiptData,
                     items: receiptData.items.map((item: any) => ({
@@ -258,8 +257,11 @@ export default function EditReceipt() {
                     })),
                     total: Number(receiptData.total),
                     receipt_type: selectedType,
-                    date: receiptData.date.toISOString().split("T")[0],
+                    date: new Date(receiptData.date)
+                      .toISOString()
+                      .split("T")[0],
                   };
+                  setIsLoading(true);
                   await saveReceiptContent(transformedData);
                   setIsLoading(false);
                   router.dismiss();
