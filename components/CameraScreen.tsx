@@ -106,7 +106,12 @@ export default function CameraScreen() {
 
   return (
     <View style={styles.container}>
-      <CameraView style={styles.camera} facing={facing} enableTorch={torch}>
+      <CameraView
+        style={styles.camera}
+        facing={facing}
+        enableTorch={torch}
+        ref={cameraRef}
+      >
         <RCOverlay isTorchOn={torch} />
         <Pressable style={styles.torchButton} onPress={toggleTorch}>
           <Ionicons
@@ -154,7 +159,7 @@ const styles = StyleSheet.create({
   },
   torchButton: {
     position: "absolute",
-    top: 100,
+    top: 80,
     alignSelf: "center",
     height: 50,
     width: 50,

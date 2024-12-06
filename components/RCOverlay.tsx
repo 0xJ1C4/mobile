@@ -1,8 +1,8 @@
-import React from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import React from "react";
+import { View, StyleSheet, Dimensions } from "react-native";
 
-const { width, height } = Dimensions.get('window');
-const overlayColor = 'rgba(0,0,0,0.5)';
+const { width, height } = Dimensions.get("window");
+const overlayColor = "rgba(0,0,0,0.5)";
 
 interface RCOverlayProps {
   isTorchOn: boolean;
@@ -15,10 +15,12 @@ const RCOverlay: React.FC<RCOverlayProps> = ({ isTorchOn }) => {
         <View style={[styles.overlaySection, { height: height * 0.25 }]} />
         <View style={styles.overlayMiddleSection}>
           <View style={styles.overlaySection} />
-          <View style={[
-            styles.receiptFrame,
-            isTorchOn && styles.receiptFrameHighlight
-          ]} />
+          <View
+            style={[
+              styles.receiptFrame,
+              isTorchOn && styles.receiptFrameHighlight,
+            ]}
+          />
           <View style={styles.overlaySection} />
         </View>
         <View style={[styles.overlaySection, { height: height * 0.25 }]} />
@@ -29,35 +31,34 @@ const RCOverlay: React.FC<RCOverlayProps> = ({ isTorchOn }) => {
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   overlay: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   overlaySection: {
     flex: 1,
     backgroundColor: overlayColor,
   },
   overlayMiddleSection: {
-    flexDirection: 'row',
-    height: height * 0.5,
+    flexDirection: "row",
+    height: height * 0.6,
   },
   receiptFrame: {
-    width: width * 0.8,
-    borderWidth: 2,
-    borderColor: 'white',
-    borderRadius: 10,
+    width: width * 0.9,
+    borderWidth: 3,
+    borderColor: "white",
+    borderRadius: 15,
   },
   receiptFrameHighlight: {
-    borderColor: 'yellow',
+    borderColor: "yellow",
     borderWidth: 3,
   },
 });
 
 export default RCOverlay;
-
