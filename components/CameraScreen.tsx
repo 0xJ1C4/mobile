@@ -1,6 +1,12 @@
 import React, { useState, useRef } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { CameraView, CameraType } from "expo-camera";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
+import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { useEffect } from "react";
 import { Camera } from "expo-camera";
 import { getReceiptContent } from "@/helper/receipt";
@@ -9,11 +15,19 @@ import { useRouter } from "expo-router";
 import { useReceipt } from "@/provider/Provider";
 import { ReceiptData } from "@/constants/types";
 
+import { Ionicons } from "@expo/vector-icons";
+
+import RCOverlay from "./RCOverlay";
+
 export default function CameraScreen() {
   const [type, setType] = useState("");
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const cameraRef = useRef<CameraView>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [facing] = useState<CameraType>("back");
+
+  const [torch, setTorch] = useState(false);
 
   const { setReceiptData } = useReceipt();
   const router = useRouter();
@@ -30,6 +44,10 @@ export default function CameraScreen() {
     // Camera permissions are still loading
     return <View />;
   }
+
+  const toggleTorch = () => {
+    setTorch((current) => !current);
+  };
 
   if (!hasPermission) {
     return (
@@ -88,10 +106,18 @@ export default function CameraScreen() {
 
   return (
     <View style={styles.container}>
-      <CameraView style={styles.camera} ref={cameraRef}>
+      <CameraView style={styles.camera} facing={facing} enableTorch={torch}>
+        <RCOverlay isTorchOn={torch} />
+        <Pressable style={styles.torchButton} onPress={toggleTorch}>
+          <Ionicons
+            name={torch ? "flash" : "flash-off"}
+            size={30}
+            color="white"
+          />
+        </Pressable>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={takePicture}>
-            <Text style={styles.buttonText}>Take Picture</Text>
+          <TouchableOpacity style={styles.captureButton} onPress={takePicture}>
+            <Ionicons name="scan-outline" size={30} color="black" />
           </TouchableOpacity>
         </View>
       </CameraView>
@@ -108,10 +134,40 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   buttonContainer: {
-    flex: 1,
+    position: "absolute",
+    bottom: 30,
+    left: 0,
+    right: 0,
     flexDirection: "row",
-    backgroundColor: "transparent",
-    margin: 64,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  captureButton: {
+    height: 75,
+    width: 75,
+    backgroundColor: "white",
+    borderRadius: 75 / 2,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "black",
+  },
+  torchButton: {
+    position: "absolute",
+    top: 100,
+    alignSelf: "center",
+    height: 50,
+    width: 50,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  text: {
+    fontSize: 16,
+    color: "black",
+    textAlign: "center",
+    marginBottom: 20,
   },
   button: {
     flex: 1,
@@ -124,11 +180,5 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     color: "black",
-  },
-  text: {
-    fontSize: 16,
-    color: "black",
-    textAlign: "center",
-    marginBottom: 20,
   },
 });
