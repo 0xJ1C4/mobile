@@ -13,7 +13,6 @@ export default function CameraScreen() {
   const [type, setType] = useState("");
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const cameraRef = useRef<CameraView>(null);
-  const [photo, setPhoto] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const { setReceiptData } = useReceipt();
@@ -52,19 +51,19 @@ export default function CameraScreen() {
     setType((current: string) => (current === "back" ? "front" : "back"));
   }
   let options = {
-    quality: 0.5,
+    quality: 1,
     base64: true,
     exif: false,
+    height: 1000,
+    width: 800,
   };
   async function takePicture() {
     if (cameraRef.current) {
-      setIsLoading(true);
       const currentPhoto = await cameraRef.current.takePictureAsync(options);
-      setPhoto(currentPhoto?.base64 || "");
+      setIsLoading(true);
       const content = await getReceiptContent(currentPhoto?.base64 || "");
       setIsLoading(false);
 
-      // Process the captured image
       if (content) {
         const transformedData = {
           ...content?.message,
@@ -76,7 +75,7 @@ export default function CameraScreen() {
           total: content?.message?.total.toString(),
           image: currentPhoto?.base64,
         };
-        // send to the api
+
         setReceiptData(transformedData);
         router.push("/(input)/edit-receipt");
       }

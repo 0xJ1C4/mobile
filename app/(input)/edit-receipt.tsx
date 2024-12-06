@@ -82,7 +82,7 @@ export default function EditReceipt() {
       >
         <ScrollView>
           <View style={styles.content}>
-            <Text style={styles.title}>Edit Receipt</Text>
+            <Text style={styles.title}>EDIT RECEIPT</Text>
 
             <View style={styles.formGrid}>
               {/* Receipt Number */}
@@ -104,24 +104,27 @@ export default function EditReceipt() {
                   onPress={() => setShowDatePicker(true)}
                   style={styles.dateButton}
                 >
-                  {!showDatePicker && (
-                    <DateTimePicker
-                      value={
-                        receiptData.date
-                          ? new Date(receiptData.date)
-                          : new Date("2024-05-05")
-                      }
-                      mode="date"
-                      display="default"
-                      onChange={(event, selectedDate) => {
-                        setShowDatePicker(false);
-                        if (selectedDate) {
-                          handleInputChange("date", selectedDate);
-                        }
-                      }}
-                    />
-                  )}
+                  <Text>
+                    {receiptData.date
+                      ? new Date(receiptData.date).toLocaleDateString()
+                      : "Select Date"}
+                  </Text>
                 </TouchableOpacity>
+                {showDatePicker && (
+                  <DateTimePicker
+                    value={
+                      receiptData.date ? new Date(receiptData.date) : new Date()
+                    }
+                    mode="date"
+                    display="default"
+                    onChange={(event, selectedDate) => {
+                      setShowDatePicker(false);
+                      if (selectedDate) {
+                        handleInputChange("date", selectedDate);
+                      }
+                    }}
+                  />
+                )}
               </View>
 
               {/* Delivered By */}
@@ -295,6 +298,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
+    marginTop: 30,
     marginBottom: 20,
   },
   formGrid: {
