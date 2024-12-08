@@ -35,7 +35,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="rscanner"
         options={{
-          title:'Scanner',
+          title: "Scanner",
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <Ionicons

@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Animated, ViewStyle } from 'react-native';
+import React, { useEffect, useRef } from "react";
+import { View, StyleSheet, Animated, ViewStyle } from "react-native";
 
 export default function MetricCardSkeleton() {
   const shimmerValue = useRef(new Animated.Value(0)).current;
@@ -28,9 +28,9 @@ export default function MetricCardSkeleton() {
   const getShimmerStyle = (width: number, height: number): ViewStyle => ({
     width,
     height,
-    backgroundColor: '#e2e8f0',
-    borderRadius: height / 2,
-    overflow: 'hidden' as const,
+    backgroundColor: "#e2e8f0",
+    borderRadius: height / 4,
+    overflow: "hidden" as const,
   });
 
   const shimmerTranslate = shimmerValue.interpolate({
@@ -78,11 +78,11 @@ export default function MetricCardSkeleton() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -92,14 +92,13 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 8,
   },
   shimmer: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(255, 255, 255, 0.5)",
   },
 });
-

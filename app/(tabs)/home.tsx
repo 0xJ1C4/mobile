@@ -10,6 +10,7 @@ import { removeSession, getSession } from "@/helper/Session";
 import { ActivityIndicator } from "react-native";
 import SummaryCards from "@/components/SummaryCards";
 import { RefreshControl } from "react-native";
+import { Bold } from "lucide-react-native";
 
 export default function home() {
   const router = useRouter();
@@ -42,10 +43,9 @@ export default function home() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Text style={styles.headerText}>DASHBOARD</Text>
       {isLoading ? (
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
+        <View style={{ justifyContent: "center", alignItems: "center" }}>
           <ActivityIndicator size="large" />
         </View>
       ) : (
@@ -85,12 +85,20 @@ export default function home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8fafc",
+    backgroundColor: "#f4f6f6",
+    paddingTop: 0,
   },
   scrollView: {
     flex: 1,
   },
   content: {
     padding: 16,
+  },
+  headerText: {
+    padding: 5,
+    marginLeft: 12,
+    color: "#17202A",
+    fontSize: 36,
+    fontWeight: "bold",
   },
 });

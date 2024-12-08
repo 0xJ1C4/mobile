@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import MetricCard from "./MetricCard";
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { expense, sales, total } from "@/constants/types";
 import { getStatement } from "@/helper/statements";
 import MetricCardSkeleton from "./skeleton/MetricCardSkeleton";
@@ -60,3 +60,9 @@ export default function SummaryCards() {
     </View>
   );
 }
+
+// const styles = StyleSheet.create({
+//   salesBoard: {
+//     borderTopColor: "black",
+//   },
+// });
