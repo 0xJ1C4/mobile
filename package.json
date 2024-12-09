@@ -57,7 +57,8 @@
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.2",
     "react-navigation": "^5.0.0",
-    "tailwind-merge": "^2.5.4"
+    "tailwind-merge": "^2.5.4",
+    "expo-image": "~2.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

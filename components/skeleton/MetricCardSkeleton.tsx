@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { View, StyleSheet, Animated, ViewStyle } from "react-native";
+import { Image } from "expo-image";
 
 export default function MetricCardSkeleton() {
   const shimmerValue = useRef(new Animated.Value(0)).current;
@@ -50,8 +51,14 @@ export default function MetricCardSkeleton() {
               },
             ]}
           />
+          {/* <Image
+            source={require("@/assets/images/sales.png")}
+            style={styles.salesIMG}
+            accessibilityLabel="Sales Image"
+          /> */}
         </View>
       </View>
+
       <View style={[getShimmerStyle(150, 24), { marginBottom: 4 }]}>
         <Animated.View
           style={[
@@ -62,6 +69,7 @@ export default function MetricCardSkeleton() {
           ]}
         />
       </View>
+
       <View style={getShimmerStyle(200, 12)}>
         <Animated.View
           style={[
@@ -90,8 +98,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 3,
+    // flexDirection: "row",
+    // justifyContent: "space-between",
   },
   header: {
+    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 8,
@@ -100,5 +111,9 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     backgroundColor: "rgba(255, 255, 255, 0.5)",
+  },
+  salesIMG: {
+    height: 1000,
+    width: 1000,
   },
 });

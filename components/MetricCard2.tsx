@@ -16,7 +16,7 @@ interface MetricCardProps {
   }>;
 }
 
-export default function MetricCard({
+export default function MetricCard2({
   title,
   amount,
   change,
@@ -42,7 +42,7 @@ export default function MetricCard({
         </View>
         <View style={styles.chartContainer}>
           <Image
-            source={require("../assets/images/sales.png")}
+            source={require("../assets/images/expense.png")}
             accessibilityLabel="Sales Image"
           />
         </View>
