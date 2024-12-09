@@ -9,7 +9,6 @@ import { Image } from "expo-image";
 import MetricCard from "./MetricCard";
 import MetricCard2 from "./MetricCard2";
 import MetricCard3 from "./MetricCard3";
-
 export default function SummaryCards() {
   const [sales, setSales] = useState<sales>();
   const [expense, setExpense] = useState<expense>();
@@ -63,7 +62,6 @@ export default function SummaryCards() {
               title="Monthly Sales"
               amount={`₱${sales?.currenMonthSales.toLocaleString()}`}
               change={Number(sales?.trends) || 0}
-              pieData={pieData}
             />
           </View>
 

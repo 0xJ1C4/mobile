@@ -8,20 +8,9 @@ interface MetricCardProps {
   title: string;
   amount: string;
   change: number;
-  pieData: Array<{
-    name: string;
-    population: number;
-    color: string;
-    legendFontColor: string;
-  }>;
 }
 
-export default function MetricCard({
-  title,
-  amount,
-  change,
-  pieData,
-}: MetricCardProps) {
+export default function MetricCard({ title, amount, change }: MetricCardProps) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -36,11 +25,11 @@ export default function MetricCard({
               change >= 0 ? styles.greenText : styles.redText,
             ]}
           >
-            {change >= 0 ? "📈 " : "📉 "}
+            {change >= 0 ? "⬈ " : "⬊ "}
             {change}% from last month
           </Text>
         </View>
-        <View style={styles.chartContainer}>
+        <View style={styles.imgContainer}>
           <Image
             source={require("../assets/images/sales.png")}
             accessibilityLabel="Sales Image"
@@ -65,6 +54,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 3,
+    borderTopWidth: 10,
+    borderTopColor: "green",
   },
   header: {
     flexDirection: "row",
@@ -79,7 +70,7 @@ const styles = StyleSheet.create({
   textContainer: {
     flex: 1,
   },
-  chartContainer: {
+  imgContainer: {
     width: 50,
     height: 50,
     marginRight: 20,
@@ -102,8 +93,10 @@ const styles = StyleSheet.create({
   },
   redText: {
     color: "#ef4444",
+    fontSize: 16,
   },
   greenText: {
     color: "#22c55e",
+    fontSize: 16,
   },
 });
